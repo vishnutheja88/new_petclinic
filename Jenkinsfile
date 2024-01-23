@@ -9,38 +9,38 @@ pipeline {
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
     }
-    
     stages{
-        
+        stage("clean workspace"){
+            steps{
+                cleanWs()
+            }
+        }
+    }
+    stages{
         stage("Git Checkout"){
             steps{
                 git branch: 'main', changelog: false, poll: false, url: 'https://github.com/vishnutheja88/new_petclinic.git'
             }
         }
-        
         stage("Compile"){
             steps{
                 sh "mvn clean compile"
             }
         }
-        
-         stage("Test Cases"){
+        stage("Test Cases"){
             steps{
                 sh "mvn test"
             }
         }
-        
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Petclinic \
                     -Dsonar.java.binaries=. \
                     -Dsonar.projectKey=Petclinic '''
-    
                 }
             }
         }
-        
         stage("OWASP Dependency Check"){
             steps{
                 dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'DP'
