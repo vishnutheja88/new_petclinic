@@ -59,7 +59,7 @@ pipeline {
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         
-                        sh "docker build -t image1 ."
+                        sh "docker build --build-arg TMDB V3 API_KEY=dckr_pat_-ahjoa0H1SrPDwsgURdWBS7ucPE image1 ."
                         sh "docker tag image1 vsihnutheja88/petclinic-test:latest "
                         sh "docker push vsihnutheja88/petclinic-test:latest "
                     }
